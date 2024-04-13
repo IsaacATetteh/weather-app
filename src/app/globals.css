@@ -9,6 +9,11 @@ html, body {
  background-color: #F3F6FA;
 }
 
+
+.montserrat {
+  font-family: var(--font-montserrat);
+}
+
 input {
   padding-left: 8px;
 }

@@ -35,6 +35,8 @@ export default function Home() {
   const [description, setDescription] = useState("");
   const [temp, setTemp] = useState("");
   const [iconCode, setIconCode] = useState("");
+  const [humidity, setHumidity] = useState("");
+  const [wind, setWind] = useState("");
 
   const apiKey = "deb0d4a0b77e5707f51e68214801c05d";
   const apiUrl = "https://api.openweathermap.org/data/2.5/";
@@ -50,17 +52,27 @@ export default function Home() {
 
   const displayWeather = (result) => {
     if (result && result.weather && result.weather.length > 0 && result.main) {
-      setDescription(result.weather[0].description);
-      setTemp(result.main.temp);
+      const description = result.weather[0].description;
+
+      // Making sure each word starts with a capital letter
+      const desc = description
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+      setDescription(desc);
+      setTemp(Math.round(result.main.temp));
       setIconCode(result.weather[0].icon);
+      setWind(result.wind.speed);
+      setHumidity(result.main.humidity);
     } else {
       console.error("Invalid city", result);
     }
   };
 
   return (
-    <div className="h-full w-full flex items-center justify-center">
-      <div className="rounded-md drop-shadow-md w-[80%] bg-white h-[80%]">
+    <div className="h-full w-full flex items-center justify-center font-montserrat min-h-[600px] min-w-[1200px]">
+      <div className="rounded-md drop-shadow-md w-[80%] bg-white h-[80%] overflow-hidden">
         <div className="flex text-lg items-center w-[45%] h-[50px] mt-10 ml-9">
           <p>Your City</p>
           <input
@@ -88,15 +100,33 @@ export default function Home() {
             </svg>
           </button>
         </div>
-
-        <div className="flex border-2 justify-center  border-black ml-12 mt-7 h-[70%] w-[28%]">
-          <div className="flex border-2 border-black mt-24 w-full h-1/2">
-            <p className="text-5xl font-semibold">{temp}</p>
-            <p className="text-sm font-semibold">{description}</p>
-            <img
-              src={`https://openweathermap.org/img/wn/${iconCode}@2x.png`}
-              alt=""
-            />
+        <div className="flex-col justify-center  ml-12 mt-7 h-[70%] w-[28%]">
+          <div className="flex-cols justify-center items-center flex-col mt-24 w-full h-1/2">
+            <div className="flex justify-center items-center  h-1/2">
+              <img
+                src={`https://openweathermap.org/img/wn/${iconCode}@2x.png`}
+                alt=""
+                className="w-36 h-36"
+              />
+            </div>
+            <div className="flex justify-center items-center mt-4">
+              <p className="text-5xl font-semibold whitespace-nowrap">
+                {temp}°C
+              </p>
+            </div>
+            <p className="text-2xl font-bold flex justify-center whitespace-nowrap">
+              {description}
+            </p>
+          </div>
+          <div className=" w-full h-1/3 text-center flex justify-around mt-8">
+            <div className="h-12 ml-2">
+              <p className="text-gray-500 whitespace-nowrap">Humidity</p>
+              <p>{humidity}%</p>
+            </div>
+            <div className="h-12 mr-2">
+              <p className="text-gray-500 whitespace-nowrap">Wind Speed</p>
+              <p>{wind} m/s</p>
+            </div>
           </div>
         </div>
       </div>
